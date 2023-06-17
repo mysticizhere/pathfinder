@@ -1,47 +1,50 @@
-function dijkstraAlgo(nodes, start, end, nodesToAnimate, boardArray, name, heuristic) {
-  if (!start || !end || start === end) {
+const node = {
+  row,
+  col,
+  isVisited,
+  distance,
+};
+
+function dijkstraAlgo(grid, startNode, endNode) {
+  if (!startNode || !endNode || startNode === endNode) {
     return false;
   }
-  nodes[start].distance = 0;
-  nodes[start].direction = "right";
-  let unvisitedNodes = Object.keys(nodes);
-  while (unvisitedNodes.length) {
-    let currentNode = getClosestNode(nodes, unvisitedNodes);
-    while(currentNode.status === "wall" && unvisitedNodes.length){
-        currentNode = getClosestNode(nodes, unvisitedNodes);
+  nodes[startNode].distance = 0;
+  const unvisitedNodes = nodes.slice();
+  while (!!unvisitedNodes.length) {
+    sortNodesByDistance(unvisitedNodes);
+    const closestNode = unvisitedNodes.shift();
+    // while(closestNode.status === "wall" && unvisitedNodes.length){
+    //     closestNode = getClosestNode(nodes, unvisitedNodes);
+    // }
+    // if(closestNode.distance === Infinity){
+    //     return false;
+    // }
+    closestNode.isVisited = true;
+    if (closestNode === endNode) {
+      return "sucess!";
     }
-    if(currentNode.distance === Infinity){
-        return false;
-    }
-    currentNode.status = "visited";
-    if(currentNode.id === end){
-        return "sucess!";
-    }
-    updateNeighbours(nodes, currentNode, boardArray)
+    updateNeighbours(closestNode, grid);
   }
 }
 
-function getClosestNode(nodes, unvisitedNodes) {
-  let currClosest, index;
-  for(int i=0;i<unvisitedNodes.length;i++){
-    if(!currClosest || currClosest.distance > nodes[unvisitedNodes[i]].distance){
-        currClosest = nodes[unvisitedNodes[i]];
-        index = i;
-    }
+function sortNodesByDistance(unvisitedNodes) {
+  unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
+}
+
+function updateNeighbours(node, grid) {
+  const neighbours = getNeighbours(node, grid);
+  for (const neighbour of neighbours) {
+    neighbour.distance = node.distance + 1;
   }
-  unvisitedNodes.splice(index, 1);
-  return currClosest;
 }
 
-function updateNeighbours(nodes, node, boardArray, end, name, start, heuristic){
-    let neighbours = getNeighbours(node.id, nodes, boardArray);
-    for(let neighbour of neighbours){
-        if(end){
-            updateNode();
-        } else{
-            updateNode();
-        }
-    }
+function getNeighbours(node, grid) {
+  const neighbours = [];
+  const { col, row } = node;
+  if (row > 0) neighbours.push(grid[row - 1][col]);
+  if (row < grid.length - 1) neighbours.push(grid[row + 1][col]);
+  if (col > 0) neighbours.push(grid[row][col - 1]);
+  if (col < grid[0].length - 1) neighbours.push(grid[row][col + 1]);
+  return neighbours;
 }
-
-
