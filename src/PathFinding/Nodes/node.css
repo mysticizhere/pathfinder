@@ -1,0 +1,17 @@
+.node {
+  width: 20px;
+  height: 20px;
+  background-color: lightgray;
+  border: 1px solid darkgray;
+  margin: 2px;
+}
+
+.node-finish {
+  background-color: red;
+  border-color: brown;
+}
+
+.node-start {
+  background-color: aquamarine;
+  border-color: aqua;
+}
