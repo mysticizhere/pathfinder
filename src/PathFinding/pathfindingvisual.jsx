@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import Node from "./Nodes/node";
-import {
-    dijkstra,
-    getNodesInShortestPathOrder,
-} from "../algorithms/dijkstra.js";
+import dijkstraAlgo from "../algorithms/dijkstra.js";
 
 import "./pathfindingvisual.css";
 
@@ -16,7 +13,7 @@ export default class Pathfindingvisual extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            nodes: [],
+            grid: [],
             mouseIsPressed: false,
         };
     }
@@ -32,29 +29,49 @@ export default class Pathfindingvisual extends Component {
 
     handleMouseUp() {}
 
-    animateDijkstra() {}
+    animateDijkstra(visitedNodesInOrder) {
+        for (let i = 0; i < visitedNodesInOrder.length; i++) {
+            setTimeout(() => {
+                const node = visitedNodesInOrder[i];
+                const newGrid = this.state.grid.slice();
+                const newNode = {
+                    ...node,
+                    isVisited: true,
+                };
+                newGrid[newNode.row][newNode.col] = newNode;
+                this.setState({ grid: newGrid });
+            }, 100 * i);
+        }
+    }
 
-    visualizeDijkstra() {}
+    visualizeDijkstra() {
+        const { grid } = this.state;
+        const startNode = grid[startNodeRow][startNodeCol];
+        const endNode = grid[endNodeRow][endNodeCol];
+        const visitedNodesInOrder = dijkstraAlgo(grid, startNode, endNode);
+        this.animateDijkstra(visitedNodesInOrder);
+    }
 
     render() {
-        const { nodes } = this.state;
-        console.log(nodes);
+        const { grid } = this.state;
         return (
             <>
                 <button onClick={() => this.visualizeDijkstra()}>
                     Visualize
                 </button>
                 <div className="grid">
-                    {nodes.map((row, rowIdx) => {
+                    {grid.map((row, rowIdx) => {
                         return (
                             <div key={rowIdx} className="row">
                                 {row.map((node, nodeIdx) => {
-                                    const { isStart, isFinish } = node;
+                                    const { isStart, isFinish, isVisited } =
+                                        node;
                                     return (
                                         <Node
                                             key={nodeIdx}
                                             isStart={isStart}
                                             isFinish={isFinish}
+                                            isVisited={isVisited}
                                         ></Node>
                                     );
                                 })}

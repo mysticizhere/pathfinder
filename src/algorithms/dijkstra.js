@@ -1,4 +1,4 @@
-export function dijkstraAlgo(grid, startNode, endNode) {
+export default function dijkstraAlgo(grid, startNode, endNode) {
     const visitedNodesInOrder = [];
     startNode.distance = 0;
     const unvisitedNodes = getAllNodes(grid);
@@ -11,7 +11,6 @@ export function dijkstraAlgo(grid, startNode, endNode) {
         // if(closestNode.distance === Infinity){
         //     return false;
         // }
-        closestNode.isVisited = true;
         visitedNodesInOrder.push(closestNode);
         if (closestNode === endNode) {
             return visitedNodesInOrder;
