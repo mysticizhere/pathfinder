@@ -30,8 +30,10 @@ export default class Pathfindingvisual extends Component {
     handleMouseUp() {}
 
     animateDijkstra(visitedNodesInOrder) {
-        for (let i = 0; i < visitedNodesInOrder.length; i++) {
-            setTimeout(() => {
+        const animationSpeed = 10; // Adjust animation speed as needed
+        let i = 0;
+        const animate = () => {
+            if (i < visitedNodesInOrder.length) {
                 const node = visitedNodesInOrder[i];
                 const newGrid = this.state.grid.slice();
                 const newNode = {
@@ -40,8 +42,11 @@ export default class Pathfindingvisual extends Component {
                 };
                 newGrid[newNode.row][newNode.col] = newNode;
                 this.setState({ grid: newGrid });
-            }, 100 * i);
-        }
+                i++;
+                setTimeout(animate, animationSpeed); // Delay between each frame
+            }
+        };
+        animate();
     }
 
     visualizeDijkstra() {
