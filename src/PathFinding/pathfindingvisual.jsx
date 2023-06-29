@@ -15,6 +15,7 @@ export default class Pathfindingvisual extends Component {
         this.state = {
             grid: [],
             mouseIsPressed: false,
+            animationSpeed: 50,
         };
     }
 
@@ -23,30 +24,42 @@ export default class Pathfindingvisual extends Component {
         this.setState({ grid });
     }
 
-    handleMouseDown() {}
+    handleMouseDown(row, col) {
+        const newGrid = getNewGridWithWalls(this.state.grid, row, col);
+        this.setState({ grid: newGrid, mouseIsPressed: true });
+    }
 
-    handleMouseEnter() {}
+    handleMouseEnter(row, col) {
+        if (!this.state.mouseIsPressed) return;
+        const newGrid = getNewGridWithWalls(this.state.grid, row, col);
+        this.setState({ grid: newGrid });
+    }
 
-    handleMouseUp() {}
+    handleMouseUp() {
+        this.setState({ mouseIsPressed: false });
+    }
+
+    handleSpeedChange = (e) => {
+        const speedValue = parseInt(e.target.value);
+        this.setState({ animationSpeed: speedValue });
+    };
 
     animateDijkstra(visitedNodesInOrder) {
-        const animationSpeed = 10; // Adjust animation speed as needed
-        let i = 0;
-        const animate = () => {
-            if (i < visitedNodesInOrder.length) {
-                const node = visitedNodesInOrder[i];
-                const newGrid = this.state.grid.slice();
-                const newNode = {
-                    ...node,
-                    isVisited: true,
-                };
-                newGrid[newNode.row][newNode.col] = newNode;
-                this.setState({ grid: newGrid });
-                i++;
-                setTimeout(animate, animationSpeed); // Delay between each frame
-            }
-        };
-        animate();
+        const { reset, animationSpeed } = this.state;
+        for (let i = 0; i < visitedNodesInOrder.length; i++) {
+            setTimeout(() => {
+                if (i < visitedNodesInOrder.length && !reset) {
+                    const node = visitedNodesInOrder[i];
+                    const newGrid = this.state.grid.slice();
+                    const newNode = {
+                        ...node,
+                        isVisited: true,
+                    };
+                    newGrid[newNode.row][newNode.col] = newNode;
+                    this.setState({ grid: newGrid });
+                }
+            }, (115 - animationSpeed) * i);
+        }
     }
 
     visualizeDijkstra() {
@@ -58,9 +71,20 @@ export default class Pathfindingvisual extends Component {
     }
 
     render() {
-        const { grid } = this.state;
+        const { grid, animationSpeed, mouseIsPressed } = this.state;
         return (
             <>
+                <div>
+                    <label htmlFor="speed-slider">Animation Speed:</label>
+                    <input
+                        type="range"
+                        id="speed-slider"
+                        min="15"
+                        max="100"
+                        value={animationSpeed}
+                        onChange={this.handleSpeedChange}
+                    />
+                </div>
                 <button onClick={() => this.visualizeDijkstra()}>
                     Visualize
                 </button>
@@ -69,14 +93,33 @@ export default class Pathfindingvisual extends Component {
                         return (
                             <div key={rowIdx} className="row">
                                 {row.map((node, nodeIdx) => {
-                                    const { isStart, isFinish, isVisited } =
-                                        node;
+                                    const {
+                                        col,
+                                        isStart,
+                                        isFinish,
+                                        isVisited,
+                                        isWall,
+                                        row,
+                                    } = node;
                                     return (
                                         <Node
                                             key={nodeIdx}
-                                            isStart={isStart}
+                                            col={col}
                                             isFinish={isFinish}
+                                            isStart={isStart}
                                             isVisited={isVisited}
+                                            isWall={isWall}
+                                            mouseIsPressed={mouseIsPressed}
+                                            onMouseDown={(row, col) =>
+                                                this.handleMouseDown(row, col)
+                                            }
+                                            onMouseEnter={(row, col) =>
+                                                this.handleMouseEnter(row, col)
+                                            }
+                                            onMouseUp={() =>
+                                                this.handleMouseUp()
+                                            }
+                                            row={row}
                                         ></Node>
                                     );
                                 })}
