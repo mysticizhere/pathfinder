@@ -45,10 +45,10 @@ export default class Pathfindingvisual extends Component {
     };
 
     animateDijkstra(visitedNodesInOrder) {
-        const { reset, animationSpeed } = this.state;
+        const { animationSpeed } = this.state;
         for (let i = 0; i < visitedNodesInOrder.length; i++) {
             setTimeout(() => {
-                if (i < visitedNodesInOrder.length && !reset) {
+                if (i < visitedNodesInOrder.length) {
                     const node = visitedNodesInOrder[i];
                     const newGrid = this.state.grid.slice();
                     const newNode = {

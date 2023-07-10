@@ -1,0 +1,17 @@
+{
+  "folders": [
+	{
+		"path": "../../../../clang-test"
+	},
+	{
+		"path": "../../.."
+	}
+],
+  "settings": {
+    "files.associations": {
+      "iostream": "cpp",
+      "vector": "cpp",
+      "ostream": "cpp"
+    }
+  }
+}
