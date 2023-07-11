@@ -13,6 +13,7 @@ export default function dijkstraAlgo(grid, startNode, endNode) {
         // if(closestNode.distance === Infinity){
         //     return false;
         // }
+        closestNode.isVisited = true;
         visitedNodesInOrder.push(closestNode);
         if (closestNode === endNode) {
             return visitedNodesInOrder;
@@ -51,4 +52,14 @@ function getAllNodes(grid) {
         }
     }
     return nodes;
+}
+
+export function getNodesInShortestPathOrder(finishNode) {
+    const nodeInShortestPathOrder = [];
+    let currNode = finishNode;
+    while (currNode !== null) {
+        nodeInShortestPathOrder.unshift(currNode);
+        currNode = currNode.previousNode;
+    }
+    return nodeInShortestPathOrder;
 }

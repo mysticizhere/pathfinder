@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import Node from "./Nodes/node";
-import dijkstraAlgo from "../algorithms/dijkstra.js";
+import dijkstraAlgo, {
+    getNodesInShortestPathOrder,
+} from "../algorithms/dijkstra.js";
 
 import "./pathfindingvisual.css";
 
@@ -15,7 +17,6 @@ export default class Pathfindingvisual extends Component {
         this.state = {
             grid: [],
             mouseIsPressed: false,
-            animationSpeed: 50,
         };
     }
 
@@ -39,26 +40,31 @@ export default class Pathfindingvisual extends Component {
         this.setState({ mouseIsPressed: false });
     }
 
-    handleSpeedChange = (e) => {
-        const speedValue = parseInt(e.target.value);
-        this.setState({ animationSpeed: speedValue });
-    };
-
-    animateDijkstra(visitedNodesInOrder) {
-        const { animationSpeed } = this.state;
-        for (let i = 0; i < visitedNodesInOrder.length; i++) {
+    animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
+        for (let i = 0; i <= visitedNodesInOrder.length; i++) {
+            if (i === visitedNodesInOrder.length) {
+                setTimeout(() => {
+                    this.animateShortestPath(nodesInShortestPathOrder);
+                }, 10 * i);
+                return;
+            }
             setTimeout(() => {
-                if (i < visitedNodesInOrder.length) {
-                    const node = visitedNodesInOrder[i];
-                    const newGrid = this.state.grid.slice();
-                    const newNode = {
-                        ...node,
-                        isVisited: true,
-                    };
-                    newGrid[newNode.row][newNode.col] = newNode;
-                    this.setState({ grid: newGrid });
-                }
-            }, (115 - animationSpeed) * i);
+                const node = visitedNodesInOrder[i];
+                document.getElementById(
+                    `node-${node.row}-${node.col}`
+                ).className = "node node-visited";
+            }, 10 * i);
+        }
+    }
+
+    animateShortestPath(nodesInShortestPathOrder) {
+        for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
+            setTimeout(() => {
+                const node = nodesInShortestPathOrder[i];
+                document.getElementById(
+                    `node-${node.row}-${node.col}`
+                ).className = "node node-shortest-path";
+            }, 50 * i);
         }
     }
 
@@ -67,25 +73,18 @@ export default class Pathfindingvisual extends Component {
         const startNode = grid[startNodeRow][startNodeCol];
         const endNode = grid[endNodeRow][endNodeCol];
         const visitedNodesInOrder = dijkstraAlgo(grid, startNode, endNode);
-        this.animateDijkstra(visitedNodesInOrder);
+        const nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode);
+        this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
     }
 
     render() {
-        const { grid, animationSpeed, mouseIsPressed } = this.state;
+        const { grid, mouseIsPressed } = this.state;
         return (
             <>
-                <div>
-                    <label htmlFor="speed-slider">Animation Speed:</label>
-                    <input
-                        type="range"
-                        id="speed-slider"
-                        min="15"
-                        max="100"
-                        value={animationSpeed}
-                        onChange={this.handleSpeedChange}
-                    />
-                </div>
-                <button onClick={() => this.visualizeDijkstra()}>
+                <button
+                    className="Visualize"
+                    onClick={() => this.visualizeDijkstra()}
+                >
                     Visualize
                 </button>
                 <div className="grid">
