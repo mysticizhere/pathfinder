@@ -1,46 +1,36 @@
-import React, { Component } from "react";
+import React from "react";
 import "./node.css";
 
-export default class Node extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
+const Node = (props) => {
+    const {
+        row,
+        col,
+        isStart,
+        isFinish,
+        isWall,
+        onMouseDown,
+        onMouseEnter,
+        onMouseUp,
+        onMouseLeave,
+    } = props;
+    const extraClassName = isStart
+        ? "node-start"
+        : isFinish
+        ? "node-finish"
+        : isWall
+        ? "node-wall"
+        : "";
 
-    render() {
-        const {
-            col,
-            isFinish,
-            isStart,
-            isVisited,
-            isWall,
-            onMouseDown,
-            onMouseEnter,
-            onMouseUp,
-            row,
-        } = this.props;
-        const extraClassName = isFinish
-            ? "node-finish"
-            : isStart
-            ? "node-start"
-            : isWall
-            ? "node-wall"
-            : isVisited
-            ? "node-visited"
-            : "";
-        return (
-            <div
-                id={`node-${row}-${col}`}
-                className={`node ${extraClassName}`}
-                onMouseDown={() => onMouseDown(row, col)}
-                onMouseEnter={() => onMouseEnter(row, col)}
-                onMouseUp={() => onMouseUp()}
-            ></div>
-        );
-    }
-}
-
-export const DEFAULT_NODE = {
-    row: 0,
-    col: 0,
+    return (
+        <div
+            id={`node-${row}-${col}`}
+            className={`node ${extraClassName}`}
+            onMouseDown={() => onMouseDown(row, col)}
+            onMouseEnter={() => onMouseEnter(row, col)}
+            onMouseUp={() => onMouseUp(row, col)}
+            onMouseLeave={() => onMouseLeave(row, col)}
+        ></div>
+    );
 };
+
+export default Node;

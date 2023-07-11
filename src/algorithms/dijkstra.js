@@ -1,4 +1,10 @@
-export default function dijkstraAlgo(grid, startNode, endNode) {
+import {
+    getAllNodes,
+    sortNodesByDistance,
+    getUnvisitedNeighbours,
+} from "./helper";
+
+export function dijkstra(grid, startNode, finishNode) {
     const visitedNodesInOrder = [];
     startNode.distance = 0;
     const unvisitedNodes = getAllNodes(grid);
@@ -6,54 +12,21 @@ export default function dijkstraAlgo(grid, startNode, endNode) {
         sortNodesByDistance(unvisitedNodes);
         const closestNode = unvisitedNodes.shift();
         if (closestNode.isWall) continue;
+
         if (closestNode.distance === Infinity) return visitedNodesInOrder;
+
         closestNode.isVisited = true;
         visitedNodesInOrder.push(closestNode);
-        if (closestNode === endNode) {
-            return visitedNodesInOrder;
-        }
-        updateNeighbours(closestNode, grid);
+        if (closestNode === finishNode) return visitedNodesInOrder;
+
+        updateUnvisitedNeighbours(closestNode, grid);
     }
 }
 
-function sortNodesByDistance(unvisitedNodes) {
-    unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
-}
-
-function updateNeighbours(node, grid) {
-    const neighbours = getNeighbours(node, grid);
-    for (const neighbour of neighbours) {
-        neighbour.distance = node.distance + 1;
-        neighbour.previousNode = node;
+function updateUnvisitedNeighbours(node, grid) {
+    const unvisitedNeighbors = getUnvisitedNeighbours(node, grid);
+    for (const neighbor of unvisitedNeighbors) {
+        neighbor.distance = node.distance + 1;
+        neighbor.previousNode = node;
     }
-}
-
-function getNeighbours(node, grid) {
-    const neighbours = [];
-    const { col, row } = node;
-    if (row > 0) neighbours.push(grid[row - 1][col]);
-    if (row < grid.length - 1) neighbours.push(grid[row + 1][col]);
-    if (col > 0) neighbours.push(grid[row][col - 1]);
-    if (col < grid[0].length - 1) neighbours.push(grid[row][col + 1]);
-    return neighbours.filter((neighbour) => !neighbour.isVisited);
-}
-
-function getAllNodes(grid) {
-    const nodes = [];
-    for (const row of grid) {
-        for (const node of row) {
-            nodes.push(node);
-        }
-    }
-    return nodes;
-}
-
-export function getNodesInShortestPathOrder(finishNode) {
-    const nodeInShortestPathOrder = [];
-    let currNode = finishNode;
-    while (currNode !== null) {
-        nodeInShortestPathOrder.unshift(currNode);
-        currNode = currNode.previousNode;
-    }
-    return nodeInShortestPathOrder;
 }

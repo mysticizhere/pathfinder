@@ -21,8 +21,7 @@
 }
 
 .node-wall {
-    background-color: aliceblue;
-    border-color: azure;
+    background-color: azure;
 }
 
 .node-shortest-path {
