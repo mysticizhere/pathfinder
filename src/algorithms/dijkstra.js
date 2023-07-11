@@ -7,12 +7,6 @@ export default function dijkstraAlgo(grid, startNode, endNode) {
         const closestNode = unvisitedNodes.shift();
         if (closestNode.isWall) continue;
         if (closestNode.distance === Infinity) return visitedNodesInOrder;
-        // while(closestNode.status === "wall" && unvisitedNodes.length){
-        //     closestNode = getClosestNode(nodes, unvisitedNodes);
-        // }
-        // if(closestNode.distance === Infinity){
-        //     return false;
-        // }
         closestNode.isVisited = true;
         visitedNodesInOrder.push(closestNode);
         if (closestNode === endNode) {
