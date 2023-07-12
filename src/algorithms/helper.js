@@ -1,9 +1,11 @@
 import { dijkstra } from "./dijkstra";
 import { bfs } from "./bfs";
+import { astar } from "./astar";
 
 export {
     dijkstra,
     bfs,
+    astar,
     getNodesInShortestPathOrder,
     getAllNodes,
     sortNodesByDistance,

@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import Node from "./Nodes/node";
 import { dijkstra } from "../algorithms/dijkstra";
 import { bfs } from "../algorithms/bfs";
+import { astar } from "../algorithms/helper";
 import { getNodesInShortestPathOrder } from "../algorithms/helper";
-import { animatePath, animateWalls, setVisualizationState } from "../animation";
+import { animatePath, setVisualizationState } from "../animation";
 import AppNavbar from "../navbar/nav";
 import "./pathfindingvisual.css";
 
@@ -36,17 +37,51 @@ export default class Pathfindingvisual extends Component {
     }
 
     handleMouseDown(row, col) {
-        const newGrid = getNewGridWithWalls(this.state.grid, row, col);
-        this.setState({ grid: newGrid, mouseIsPressed: true });
+        const { grid, mainIsPressed } = this.state;
+        const node = grid[row][col];
+        if (node.isStart === true && node.isFinish === false) {
+            this.setState({ mainIsPressed: "start" });
+            node.isStart = false;
+        }
+        if (node.isFinish === true && node.isStart === false) {
+            this.setState({ mainIsPressed: "finish" });
+            node.isFinish = false;
+        }
+        if (mainIsPressed === "") {
+            const newGrid = gridWithWallToggled(grid, row, col);
+            this.setState({ grid: newGrid, mouseIsPressed: true });
+        }
     }
 
     handleMouseEnter(row, col) {
-        if (!this.state.mouseIsPressed) return;
-        const newGrid = getNewGridWithWalls(this.state.grid, row, col);
-        this.setState({ grid: newGrid });
+        const { grid, mouseIsPressed, mainIsPressed } = this.state;
+        if (mainIsPressed === "start") {
+            const newGrid = gridDynamicNodes(grid, row, col, "start");
+            this.setState({ grid: newGrid });
+        }
+        if (mainIsPressed === "finish") {
+            const newGrid = gridDynamicNodes(grid, row, col, "finish");
+            this.setState({ grid: newGrid });
+        }
+        if (mouseIsPressed && mainIsPressed === "") {
+            const newGrid = gridWithWallToggled(grid, row, col);
+            this.setState({ grid: newGrid, mouseIsPressed: true });
+        }
     }
 
-    handleMouseUp() {
+    handleMouseUp(row, col) {
+        const { mainIsPressed, grid } = this.state;
+        if (mainIsPressed === "start") {
+            this.setState({ mainIsPressed: "" });
+            const startNode_Pos = [row, col];
+            const newGrid = gridDynamicNodes(grid, row, col, "start");
+            this.setState({ mainIsPressed: "", startNode_Pos, grid: newGrid });
+        }
+        if (mainIsPressed === "finish") {
+            const finishNode_Pos = [row, col];
+            const newGrid = gridDynamicNodes(grid, row, col, "finish");
+            this.setState({ mainIsPressed: "", finishNode_Pos, grid: newGrid });
+        }
         this.setState({ mouseIsPressed: false });
     }
 
@@ -139,6 +174,41 @@ export default class Pathfindingvisual extends Component {
         }
     };
 
+    visualizeAstar = () => {
+        if (this.state.isVisualizing) return;
+        const { grid, startNode_Pos, finishNode_Pos } = this.state;
+        const start_X = startNode_Pos[0],
+            start_Y = startNode_Pos[1];
+        const startNode = grid[start_X][start_Y];
+        const finish_X = finishNode_Pos[0],
+            finish_Y = finishNode_Pos[1];
+        const finishNode = grid[finish_X][finish_Y];
+        try {
+            const visitedNodesInOrder = astar(grid, startNode, finishNode);
+            const nodesInShortestPathOrder =
+                getNodesInShortestPathOrder(finishNode);
+            if (nodesInShortestPathOrder.length === 1) {
+                throw "not possible";
+            }
+            this.setState({
+                shortestNodes: nodesInShortestPathOrder.length,
+                visitedNodes: visitedNodesInOrder.length,
+            });
+            animatePath(
+                this,
+                visitedNodesInOrder,
+                nodesInShortestPathOrder,
+                startNode,
+                finishNode
+            );
+        } catch (error) {
+            this.setState({ isPathNotFound: true, isVisualizing: true });
+            setTimeout(() => {
+                this.setState({ isPathNotFound: false, isVisualizing: false });
+            }, 3000);
+        }
+    };
+
     setVisualization = () => {
         this.setState({
             isVisualizing: !this.state.isVisualizing,
@@ -150,13 +220,17 @@ export default class Pathfindingvisual extends Component {
     };
 
     render() {
-        const { grid, mouseIsPressed } = this.state;
+        const { grid, mouseIsPressed, visitedNodes, shortestNodes } =
+            this.state;
         return (
             <>
                 <AppNavbar
                     handleDijkstra={this.visualizeDijkstra}
                     handleBFS={this.visualizeBFS}
+                    handleAstar={this.visualizeAstar}
                     handleVisualization={this.setVisualization}
+                    visitedNodes={visitedNodes}
+                    shortestNodes={shortestNodes}
                 />
                 <div className="grid">
                     {grid.map((row, rowIdx) => {
@@ -235,13 +309,34 @@ const createNode = (row, col, startNode, finishNode) => {
     };
 };
 
-const getNewGridWithWalls = (grid, row, col) => {
-    const newGrid = grid.slice();
+const gridWithWallToggled = (grid, row, col) => {
+    let newGrid = grid.slice();
     const node = newGrid[row][col];
     const newNode = {
         ...node,
         isWall: !node.isWall,
     };
     newGrid[row][col] = newNode;
+    return newGrid;
+};
+
+const gridDynamicNodes = (grid, row, col, pos) => {
+    console.log(`start node is currently at: row: ${row} col: ${col}`);
+    let newGrid = grid.slice();
+    const node = newGrid[row][col];
+    if (pos === "start") {
+        const newNode = {
+            ...node,
+            isStart: true,
+        };
+        newGrid[row][col] = newNode;
+    }
+    if (pos === "finish") {
+        const newNode = {
+            ...node,
+            isFinish: true,
+        };
+        newGrid[row][col] = newNode;
+    }
     return newGrid;
 };

@@ -6,8 +6,6 @@ import {
     NavbarToggler,
     NavbarBrand,
     Nav,
-    NavItem,
-    NavLink,
     UncontrolledDropdown,
     DropdownToggle,
     DropdownMenu,
@@ -23,15 +21,10 @@ const AppNavbar = (props) => {
     return (
         <div>
             <Navbar color="dark" dark expand="md">
-                <NavbarBrand href="/">PathVisualizer</NavbarBrand>
+                <NavbarBrand href="/">Pathfinder</NavbarBrand>
                 <NavbarToggler onClick={toggle} />
                 <Collapse isOpen={isOpen} navbar>
                     <Nav className="mr-auto" navbar>
-                        <NavItem id={"Tooltip-" + 6}>
-                            <NavLink href="https://github.com/Sethuram52001/Path-Finding-Visualizer">
-                                GitHub
-                            </NavLink>
-                        </NavItem>
                         <UncontrolledDropdown nav inNavbar>
                             <DropdownToggle id={"Tooltip-" + 5} nav caret>
                                 Algorithms
@@ -55,6 +48,16 @@ const AppNavbar = (props) => {
                                         }}
                                     >
                                         BFS
+                                    </Button>
+                                </DropdownItem>
+                                <DropdownItem>
+                                    <Button
+                                        onClick={() => {
+                                            props.handleAstar();
+                                            props.handleVisualization();
+                                        }}
+                                    >
+                                        A*
                                     </Button>
                                 </DropdownItem>
                             </DropdownMenu>

@@ -1,7 +1,6 @@
 import { animatePath } from "./algovisualise";
-import { animateWalls } from "./wallvisualise";
 
-export { animatePath, animateWalls };
+export { animatePath };
 
 export const setVisualizationState = (klass) => {
     klass.setState({ isVisualizing: false });
