@@ -14,17 +14,17 @@ const FINISH_NODE_ROW = 10;
 const FINISH_NODE_COL = 35;
 
 export default class Pathfindingvisual extends Component {
-        state = {
-            grid: [],
-            mouseIsPressed: false,
-            isPathNotFound: false,
-            visitedNodes: 0,
-            shortestNodes: 0,
-            isVisualizing: false,
-            mainIsPressed: "",
-            startNode_Pos: [START_NODE_ROW, START_NODE_COL],
-            finishNode_Pos: [FINISH_NODE_ROW, FINISH_NODE_COL],
-        };
+    state = {
+        grid: [],
+        mouseIsPressed: false,
+        isPathNotFound: false,
+        visitedNodes: 0,
+        shortestNodes: 0,
+        isVisualizing: false,
+        mainIsPressed: "",
+        startNode_Pos: [START_NODE_ROW, START_NODE_COL],
+        finishNode_Pos: [FINISH_NODE_ROW, FINISH_NODE_COL],
+    };
 
     componentDidMount() {
         const { startNode_Pos, finishNode_Pos } = this.state;
