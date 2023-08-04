@@ -18,8 +18,6 @@ export default class Pathfindingvisual extends Component {
         grid: [],
         mouseIsPressed: false,
         isPathNotFound: false,
-        visitedNodes: 0,
-        shortestNodes: 0,
         isVisualizing: false,
         mainIsPressed: "",
         startNode_Pos: [START_NODE_ROW, START_NODE_COL],
@@ -119,10 +117,6 @@ export default class Pathfindingvisual extends Component {
             const nodesInShortestPathOrder =
                 getNodesInShortestPathOrder(finishNode);
             if (nodesInShortestPathOrder.length === 1) throw "not possible";
-            this.setState({
-                shortestNodes: nodesInShortestPathOrder.length,
-                visitedNodes: visitedNodesInOrder.length,
-            });
             animatePath(
                 this,
                 visitedNodesInOrder,
@@ -151,10 +145,6 @@ export default class Pathfindingvisual extends Component {
             const visitedNodesInOrder = bfs(grid, startNode, finishNode);
             const nodesInShortestPathOrder =
                 getNodesInShortestPathOrder(finishNode);
-            this.setState({
-                shortestNodes: nodesInShortestPathOrder.length,
-                visitedNodes: visitedNodesInOrder.length,
-            });
             animatePath(
                 this,
                 visitedNodesInOrder,
@@ -186,10 +176,6 @@ export default class Pathfindingvisual extends Component {
             if (nodesInShortestPathOrder.length === 1) {
                 throw "not possible";
             }
-            this.setState({
-                shortestNodes: nodesInShortestPathOrder.length,
-                visitedNodes: visitedNodesInOrder.length,
-            });
             animatePath(
                 this,
                 visitedNodesInOrder,
@@ -212,7 +198,7 @@ export default class Pathfindingvisual extends Component {
     };
 
     render() {
-        const { grid, mouseIsPressed, visitedNodes, shortestNodes } =
+        const { grid, mouseIsPressed } =
             this.state;
         return (
             <>
@@ -221,8 +207,6 @@ export default class Pathfindingvisual extends Component {
                     handleBFS={this.visualizeBFS}
                     handleAstar={this.visualizeAstar}
                     handleVisualization={this.setVisualization}
-                    visitedNodes={visitedNodes}
-                    shortestNodes={shortestNodes}
                 />
                 <div className="grid">
                     {grid.map((row, rowIdx) => {
