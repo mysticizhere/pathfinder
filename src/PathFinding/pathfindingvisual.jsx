@@ -4,7 +4,7 @@ import { dijkstra } from "../algorithms/dijkstra";
 import { bfs } from "../algorithms/bfs";
 import { astar } from "../algorithms/helper";
 import { getNodesInShortestPathOrder } from "../algorithms/helper";
-import { animatePath, setVisualizationState } from "../animation";
+import { animatePath } from "../animation";
 import AppNavbar from "../navbar/nav";
 import "./pathfindingvisual.css";
 
