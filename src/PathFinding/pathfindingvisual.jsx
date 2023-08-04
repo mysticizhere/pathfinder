@@ -211,10 +211,6 @@ export default class Pathfindingvisual extends Component {
         });
     };
 
-    handleClick = () => {
-        setVisualizationState(this);
-    };
-
     render() {
         const { grid, mouseIsPressed, visitedNodes, shortestNodes } =
             this.state;
