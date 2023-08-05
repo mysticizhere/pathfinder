@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-const AppNavbar = (props) => {
+import React from "react";
+const Navbar = (props) => {
     return (
         <div>
             <button
@@ -32,4 +32,4 @@ const AppNavbar = (props) => {
     );
 };
 
-export default AppNavbar;
+export default Navbar;

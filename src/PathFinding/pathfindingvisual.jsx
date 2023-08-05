@@ -5,7 +5,7 @@ import { bfs } from "../algorithms/bfs";
 import { astar } from "../algorithms/helper";
 import { getNodesInShortestPathOrder } from "../algorithms/helper";
 import { animatePath } from "../animation/algovisualise";
-import AppNavbar from "../navbar/nav";
+import Navbar from "../navbar/nav";
 import "./pathfindingvisual.css";
 
 const START_NODE_ROW = 10;
@@ -16,7 +16,6 @@ const FINISH_NODE_COL = 35;
 const PathfindingVisual = () => {
   const [grid, setGrid] = useState([]);
   const [mouseIsPressed, setMouseIsPressed] = useState(false);
-  const [isPathNotFound, setIsPathNotFound] = useState(false);
   const [isVisualizing, setIsVisualizing] = useState(false);
   const [mainIsPressed, setMainIsPressed] = useState("");
   const [startNodePos, setStartNodePos] = useState([START_NODE_ROW, START_NODE_COL]);
@@ -119,10 +118,8 @@ const PathfindingVisual = () => {
         finishNode
       );
     } catch (error) {
-      setIsPathNotFound(true);
       setIsVisualizing(true);
       setTimeout(() => {
-        setIsPathNotFound(false);
         setIsVisualizing(false);
       }, 3000);
     }
@@ -147,10 +144,8 @@ const PathfindingVisual = () => {
         finishNode
       );
     } catch (error) {
-      setIsPathNotFound(true);
       setIsVisualizing(true);
       setTimeout(() => {
-        setIsPathNotFound(false);
         setIsVisualizing(false);
       }, 3000);
     }
@@ -178,10 +173,8 @@ const PathfindingVisual = () => {
         finishNode
       );
     } catch (error) {
-      setIsPathNotFound(true);
       setIsVisualizing(true);
       setTimeout(() => {
-        setIsPathNotFound(false);
         setIsVisualizing(false);
       }, 3000);
     }
@@ -193,7 +186,7 @@ const PathfindingVisual = () => {
 
   return (
     <>
-      <AppNavbar
+      <Navbar
         handleDijkstra={visualizeDijkstra}
         handleBFS={visualizeBFS}
         handleAstar={visualizeAstar}
