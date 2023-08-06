@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import Node from "./Nodes/node";
 import { dijkstra } from "../algorithms/dijkstra";
 import { bfs } from "../algorithms/bfs";
-import { astar } from "../algorithms/helper";
 import { getNodesInShortestPathOrder } from "../algorithms/helper";
 import { animatePath } from "../animation/algovisualise";
 import Navbar from "../navbar/nav";
@@ -151,35 +150,6 @@ const PathfindingVisual = () => {
     }
   };
 
-  const visualizeAstar = () => {
-    if (isVisualizing) return;
-    const start_X = startNodePos[0];
-    const start_Y = startNodePos[1];
-    const startNode = grid[start_X][start_Y];
-    const finish_X = finishNodePos[0];
-    const finish_Y = finishNodePos[1];
-    const finishNode = grid[finish_X][finish_Y];
-    try {
-      const visitedNodesInOrder = astar(grid, startNode, finishNode);
-      const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
-      if (nodesInShortestPathOrder.length === 1) {
-        throw "not possible";
-      }
-      animatePath(
-        setIsVisualizing,
-        visitedNodesInOrder,
-        nodesInShortestPathOrder,
-        startNode,
-        finishNode
-      );
-    } catch (error) {
-      setIsVisualizing(true);
-      setTimeout(() => {
-        setIsVisualizing(false);
-      }, 3000);
-    }
-  };
-
   const setVisualization = () => {
     setIsVisualizing((prevState) => !prevState);
   };
@@ -189,7 +159,6 @@ const PathfindingVisual = () => {
       <Navbar
         handleDijkstra={visualizeDijkstra}
         handleBFS={visualizeBFS}
-        handleAstar={visualizeAstar}
         handleVisualization={setVisualization}
       />
       <div className="grid">

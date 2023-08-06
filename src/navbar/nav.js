@@ -19,15 +19,6 @@ const Navbar = (props) => {
             >
                 BFS
             </button>
-        
-            <button
-                onClick={() => {
-                    props.handleAstar();
-                    props.handleVisualization();
-                }}
-            >
-                A*
-            </button>
         </div>
     );
 };
